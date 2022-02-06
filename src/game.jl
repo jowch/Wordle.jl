@@ -77,10 +77,10 @@ function guess(game::WordleGame, word::String)
         if t == w
             push!(results, CORRECT)
         elseif w ∈ game.target && w ∉ word[1:i-1]
-			push!(results, PRESENT)
-		else
-			push!(results, INCORRECT)
-		end
+            push!(results, PRESENT)
+        else
+            push!(results, INCORRECT)
+        end
     end
 
 	WordleGuess(word, results)
