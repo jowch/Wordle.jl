@@ -48,10 +48,13 @@ function download_word_lists()
         all(sort(first_five) .== first_five)
     end
 
-    valid_words = target_lists[findall(is_sorted) |> only]
-
     # the original game code started with the second word in the list
     wordles = target_lists[findall(.!(is_sorted)) |> only][2:LATEST_WORDLE_NUMBER + 1]
+
+    # the original valid word list doesn't include wordles so if we do not add
+    # ALL of the wordles into the valid word list then future wordles will not
+    # be considered valid words
+    valid_words = sort(vcat(target_lists...))
 
     wordles, valid_words
 end

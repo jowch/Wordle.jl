@@ -11,11 +11,13 @@ struct WordleGame
     function WordleGame(target::String, number::Union{Int, Nothing} = nothing,
                guesses::Vector{WordleGuess} = WordleGuess[])
 
-        if target ∉ VALID_WORD_LIST && target ∉ WORDLE_LIST
+        target = lowercase(target)
+
+        if target ∉ VALID_WORD_LIST
             error("""Target word "$target" is not a valid word""")
         end
 
-        if !isnothing(number) && number > LATEST_WORDLE_NUMBER
+        if !isnothing(number) && !(0 < number <= LATEST_WORDLE_NUMBER)
             error("Given Wordle number is too large ($number).")
         end
 
@@ -23,7 +25,7 @@ struct WordleGame
             error("There are too many guesses ($(length(guesses))")
         end
 
-        new(lowercase(target), number, guesses)
+        new(target, number, guesses)
     end
 end
 
@@ -61,7 +63,7 @@ end
 function guess(game::WordleGame, word::String)
     word = lowercase(word)
 
-    if length(word) > 5 || (word ∉ VALID_WORD_LIST && word ∉ WORDLE_LIST)
+    if length(word) > 5 || word ∉ VALID_WORD_LIST
         error("$word is not a valid guess")
     end
 
@@ -85,6 +87,10 @@ function guess(game::WordleGame, word::String)
 end
 
 function guess!(game::WordleGame, word::String)
+    if nguess(game) == 6
+        error("The game is already over!")
+    end
+
     push!(game.guesses, guess(game, word))
     game
 end
