@@ -9,10 +9,7 @@ export
 
 # game
 WordleGame, nguess, guess, guess!,
-available_letters, print_available_letters,
-
-# other functions
-download_word_lists
+available_letters, print_available_letters
 
 
 const CORRECT, PRESENT, INCORRECT = :🟩, :🟨, :⬛️
