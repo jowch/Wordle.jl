@@ -1,7 +1,7 @@
 """
     WordleGame
 
-Yep!
+A struct tracking the state of a game of Wordle.
 """
 struct WordleGame
     target::String
