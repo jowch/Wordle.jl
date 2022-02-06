@@ -96,7 +96,7 @@ function guess!(game::WordleGame, word::String)
 end
 
 function available_letters(game::WordleGame)
-    outcomes = [:⬜ for _ in 'a':'z']
+    outcomes = [UNGUESSED for _ in 'a':'z']
 
     for guess in game.guesses
         for (outcome, letter) in zip(guess.result, guess.guess)
