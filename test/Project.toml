@@ -1,2 +1,6 @@
 [deps]
+Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
+SHA = "ea8e919c-243c-51af-8825-aaa63cd721ce"
+Suppressor = "fd094767-a336-5f1f-9728-57cf17d0bbfb"
+TOML = "fa267f1f-6049-4f14-aa54-33bafae1ed76"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"

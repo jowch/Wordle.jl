@@ -1,7 +1,15 @@
 using Wordle
 using Test
+using TOML
+using SHA
+using Suppressor
+
+
+data = TOML.parsefile(joinpath(@__DIR__(), "Data.toml"))
 
 tests = [
+    "fetch",
+    "game"
 ]
 
 @testset "Wordle" begin
