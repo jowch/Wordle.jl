@@ -1,0 +1,122 @@
+"""
+    WordleGame
+
+Yep!
+"""
+struct WordleGame
+    target::String
+    number::Union{Int, Nothing}
+    guesses::Vector{WordleGuess}
+
+    function WordleGame(target::String, number::Union{Int, Nothing} = nothing,
+               guesses::Vector{WordleGuess} = WordleGuess[])
+
+        if target ∉ VALID_WORD_LIST && target ∉ WORDLE_LIST
+            error("""Target word "$target" is not a valid word""")
+        end
+
+        if !isnothing(number) && number > LATEST_WORDLE_NUMBER
+            error("Given Wordle number is too large ($number).")
+        end
+
+        if length(guesses) > 6
+            error("There are too many guesses ($(length(guesses))")
+        end
+
+        new(lowercase(target), number, guesses)
+    end
+end
+
+WordleGame(number::Int) = WordleGame(WORDLE_LIST[number], number)
+WordleGame() = WordleGame(LATEST_WORDLE_NUMBER)
+
+nguess(game::WordleGame) = length(game.guesses)
+target(game::WordleGame) = game.target
+
+function show(io::IO, game::WordleGame)
+    if !isnothing(game.number)
+        print(io, "Wordle $(game.number) $(nguess(game))/6")
+    else
+        print(io, "Wordle $(nguess(game))/6")
+    end
+
+    if nguess(game) > 0
+        println(io)
+        println(io)
+
+        for (i, guess) in enumerate(game.guesses)
+            if i < nguess(game)
+                println(guess)
+            else
+                print(guess)
+            end
+        end
+    end
+end
+
+function (∈)(word::String, game::WordleGame)
+    word in getproperty.(game.guesses, :guess)
+end
+
+function guess(game::WordleGame, word::String)
+    word = lowercase(word)
+
+    if length(word) > 5 || (word ∉ VALID_WORD_LIST && word ∉ WORDLE_LIST)
+        error("$word is not a valid guess")
+    end
+
+    if target(game) ∈ game
+        error("The game is already over!")
+    end
+
+    results = Symbol[]
+
+    for (i, (t, w)) in enumerate(zip(game.target, word))
+        if t == w
+            push!(results, CORRECT)
+        elseif w ∈ game.target && w ∉ word[1:i-1]
+			push!(results, PRESENT)
+		else
+			push!(results, INCORRECT)
+		end
+    end
+
+	WordleGuess(word, results)
+end
+
+function guess!(game::WordleGame, word::String)
+    push!(game.guesses, guess(game, word))
+    game
+end
+
+function available_letters(game::WordleGame)
+    outcomes = [:⬜ for _ in 'a':'z']
+
+    for guess in game.guesses
+        for (outcome, letter) in zip(guess.result, guess.guess)
+            letter_index = letter - 'a' + 1
+
+            if outcome == CORRECT
+                outcomes[letter_index] = CORRECT
+            elseif outcome == PRESENT && outcomes[letter_index] != CORRECT
+                # if the outcome for a letter in a given guess is present but it
+                # was previously correct, then it should still be marked as
+                # correct in this list
+                outcomes[letter_index] = PRESENT
+            else # incorrect
+                if outcomes[letter_index] ∉ (CORRECT, PRESENT)
+                    outcomes[letter_index] = INCORRECT
+                end
+            end
+        end
+    end
+
+    outcomes
+end
+
+function print_available_letters(game::WordleGame)
+    print("""
+    $(join('a':'z', ' '))
+    $(available_letters(game) |> join)
+    """)
+end
