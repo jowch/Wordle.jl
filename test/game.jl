@@ -153,6 +153,13 @@
             game = WordleGame("words")
             @test @suppress guess!(game, "words") !== nothing
             @test_throws ErrorException guess!(game, "bored")
+
+            game = WordleGame("seams")
+            # if n is the number of times a letter appears in a wordle and a
+            # guess has >n occurrences of that letter, only the first n occurrences
+            # have feedback
+            @test @capture_out(print(guess(game, "sissy"))) == "🟩⬛️🟨⬛️⬛️"
+            @test @capture_out(print(guess(game, "beams"))) == "⬛️🟩🟩🟩🟩"
         end
 
         @testset "Available Letters" begin

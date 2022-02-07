@@ -1,3 +1,5 @@
+using DataStructures: SortedSet
+
 """
     WordleGame
 
@@ -71,15 +73,27 @@ function guess(game::WordleGame, word::String)
         error("The game is already over!")
     end
 
-    results = Symbol[]
+    results = fill(INCORRECT, 5)
 
-    for (i, (t, w)) in enumerate(zip(game.target, word))
-        if t == w
-            push!(results, CORRECT)
-        elseif w ∈ game.target && w ∉ word[1:i-1]
-            push!(results, PRESENT)
-        else
-            push!(results, INCORRECT)
+    # we only need to consider letters that are present in both target and guess
+    matched_letters = intersect(target(game), word)
+
+    for m in matched_letters
+        # find the sets of positions for each matched letter
+        target_positions = SortedSet(findall(m, target(game)))
+        guess_positions = SortedSet(findall(m, word))
+
+        # for each exactly matching position, mark the letter as correct and
+        # remove the position from the position sets
+        for correct_position in intersect(target_positions, guess_positions)
+            results[correct_position] = CORRECT
+            delete!(target_positions, correct_position)  
+            delete!(guess_positions, correct_position)  
+        end
+
+        # pair off the remainining positions and mark them as present
+        for (_, guess_position) in zip(target_positions, guess_positions)
+            results[guess_position] = PRESENT
         end
     end
 
