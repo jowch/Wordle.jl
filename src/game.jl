@@ -92,6 +92,7 @@ function guess(game::WordleGame, word::String)
         end
 
         # pair off the remainining positions and mark them as present
+        # zip will stop after the last pair.
         for (_, guess_position) in zip(target_positions, guess_positions)
             results[guess_position] = PRESENT
         end
