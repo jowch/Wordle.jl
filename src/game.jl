@@ -53,6 +53,8 @@ function show(io::IO, game::WordleGame)
         push!(header, "$(nguess(game))/6")
     end
 
+    print(io, join(header, ' '))
+
     if nguess(game) > 0
         println(io)
         println(io)
