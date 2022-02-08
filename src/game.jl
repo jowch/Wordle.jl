@@ -9,9 +9,10 @@ struct WordleGame
     target::String
     number::Union{Int, Nothing}
     guesses::Vector{WordleGuess}
+    hard::Bool
 
     function WordleGame(target::String, number::Union{Int, Nothing} = nothing,
-               guesses::Vector{WordleGuess} = WordleGuess[])
+               guesses::Vector{WordleGuess} = WordleGuess[]; hard = false)
 
         target = lowercase(target)
 
@@ -27,12 +28,12 @@ struct WordleGame
             error("There are too many guesses ($(length(guesses))")
         end
 
-        new(target, number, guesses)
+        new(target, number, guesses, hard)
     end
 end
 
-WordleGame(number::Int) = WordleGame(WORDLE_LIST[number], number)
-WordleGame() = WordleGame(LATEST_WORDLE_NUMBER)
+WordleGame(number::Int; hard = false) = WordleGame(WORDLE_LIST[number], number, hard)
+WordleGame(; hard = false) = WordleGame(LATEST_WORDLE_NUMBER; hard = hard)
 
 nguess(game::WordleGame) = length(game.guesses)
 target(game::WordleGame) = game.target
@@ -71,6 +72,20 @@ function guess(game::WordleGame, word::String)
 
     if target(game) ∈ game
         error("The game is already over!")
+    end
+
+    if game.hard
+        letter_outcomes = available_letters(game)
+
+        # might need to account for multiple occurrences of a letter
+        required = Set(filter('a':'z') do l
+            index = l - 'a' + 1
+            letter_outcomes[index] ∈ (CORRECT, PRESENT)
+        end)
+
+        if !all(occursin.(required, word))
+            error("Invalid guess for hard mode.")
+        end
     end
 
     results = fill(INCORRECT, 5)
