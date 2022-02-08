@@ -32,7 +32,7 @@ struct WordleGame
     end
 end
 
-WordleGame(number::Int; hard = false) = WordleGame(WORDLE_LIST[number], number, hard)
+WordleGame(number::Int; hard = false) = WordleGame(WORDLE_LIST[number], number; hard = hard)
 WordleGame(; hard = false) = WordleGame(LATEST_WORDLE_NUMBER; hard = hard)
 
 nguess(game::WordleGame) = length(game.guesses)
@@ -98,12 +98,11 @@ function guess(game::WordleGame, word::String)
         end
     end
 
+    # initialize a results array to be all incorrect
     results = fill(INCORRECT, 5)
 
     # we only need to consider letters that are present in both target and guess
-    matched_letters = intersect(target(game), word)
-
-    for m in matched_letters
+    for m in intersect(target(game), word)
         # find the sets of positions for each matched letter
         target_positions = SortedSet(findall(m, target(game)))
         guess_positions = SortedSet(findall(m, word))
