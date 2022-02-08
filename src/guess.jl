@@ -22,4 +22,10 @@ struct WordleGuess
     end
 end
 
-show(io::IO, guess::WordleGuess) = print(io, guess.result |> join)
+function show(io::IO, guess::WordleGuess)
+    if IN_REPL && REPL_HAS_COLOR
+        print(io, color_letters(guess.guess, guess.result))
+    else # show emojis
+        print(io, guess.result |> join)
+    end
+end
