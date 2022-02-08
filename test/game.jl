@@ -162,6 +162,24 @@
             @test @capture_out(print(guess(game, "beams"))) == "⬛️🟩🟩🟩🟩"
         end
 
+
+        @testset "Hard Mode" begin
+            game = WordleGame("words"; hard = true)
+            guess!(game, "bored")
+            
+            # if in hard mode, your next guess must contain the letters you know
+            # are in the wordle
+            @test_throws ErrorException guess!(game, "cubic")
+            @test typeof(guess!(game, "cords")) == WordleGame
+
+            game = WordleGame("words")
+            guess!(game, "bored")
+
+            # but this sequences of guesses should be allowed in regular mode.
+            @test typeof(guess!(game, "cubic")) == WordleGame
+        end
+
+
         @testset "Available Letters" begin
             game = WordleGame("words")
             @test available_letters(game) == fill(Wordle.UNGUESSED, 26)

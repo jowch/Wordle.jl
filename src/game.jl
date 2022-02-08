@@ -9,9 +9,10 @@ struct WordleGame
     target::String
     number::Union{Int, Nothing}
     guesses::Vector{WordleGuess}
+    hard::Bool
 
     function WordleGame(target::String, number::Union{Int, Nothing} = nothing,
-               guesses::Vector{WordleGuess} = WordleGuess[])
+               guesses::Vector{WordleGuess} = WordleGuess[]; hard = false)
 
         target = lowercase(target)
 
@@ -27,22 +28,32 @@ struct WordleGame
             error("There are too many guesses ($(length(guesses))")
         end
 
-        new(target, number, guesses)
+        new(target, number, guesses, hard)
     end
 end
 
-WordleGame(number::Int) = WordleGame(WORDLE_LIST[number], number)
-WordleGame() = WordleGame(LATEST_WORDLE_NUMBER)
+WordleGame(number::Int; hard = false) = WordleGame(WORDLE_LIST[number], number; hard = hard)
+WordleGame(; hard = false) = WordleGame(LATEST_WORDLE_NUMBER; hard = hard)
 
 nguess(game::WordleGame) = length(game.guesses)
 target(game::WordleGame) = game.target
 
 function show(io::IO, game::WordleGame)
+    header = ["Wordle"]
+
     if !isnothing(game.number)
         print(io, "Wordle $(game.number) $(nguess(game))/6")
-    else
-        print(io, "Wordle $(nguess(game))/6")
+        push!(header, game.number)
     end
+
+    if game.hard
+        # add * for hard mode
+        push!(header, "$(nguess(game))/6*")
+    else
+        push!(header, "$(nguess(game))/6")
+    end
+
+    print(io, join(header, ' '))
 
     if nguess(game) > 0
         println(io)
@@ -73,12 +84,25 @@ function guess(game::WordleGame, word::String)
         error("The game is already over!")
     end
 
+    if game.hard
+        letter_outcomes = available_letters(game)
+
+        # might need to account for multiple occurrences of a letter
+        required = Set(filter('a':'z') do l
+            index = l - 'a' + 1
+            letter_outcomes[index] ∈ (CORRECT, PRESENT)
+        end)
+
+        if !all(occursin.(required, word))
+            error("Invalid guess for hard mode.")
+        end
+    end
+
+    # initialize a results array to be all incorrect
     results = fill(INCORRECT, 5)
 
     # we only need to consider letters that are present in both target and guess
-    matched_letters = intersect(target(game), word)
-
-    for m in matched_letters
+    for m in intersect(target(game), word)
         # find the sets of positions for each matched letter
         target_positions = SortedSet(findall(m, target(game)))
         guess_positions = SortedSet(findall(m, word))
