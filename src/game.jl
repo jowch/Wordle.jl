@@ -39,10 +39,18 @@ nguess(game::WordleGame) = length(game.guesses)
 target(game::WordleGame) = game.target
 
 function show(io::IO, game::WordleGame)
+    header = ["Wordle"]
+
     if !isnothing(game.number)
         print(io, "Wordle $(game.number) $(nguess(game))/6")
+        push!(header, game.number)
+    end
+
+    if game.hard
+        # add * for hard mode
+        push!(header, "$(nguess(game))/6*")
     else
-        print(io, "Wordle $(nguess(game))/6")
+        push!(header, "$(nguess(game))/6")
     end
 
     if nguess(game) > 0
