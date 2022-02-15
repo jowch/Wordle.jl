@@ -42,8 +42,7 @@ function show(io::IO, game::WordleGame)
     header = ["Wordle"]
 
     if !isnothing(game.number)
-        print(io, "Wordle $(game.number) $(nguess(game))/6")
-        push!(header, game.number)
+        push!(header, string(game.number))
     end
 
     if game.hard
