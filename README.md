@@ -6,12 +6,12 @@ Do you love Wordle? Do you live in the Julia REPL? Well now you can play Wordle 
 
 ## What is Wordle?
 
-[Wordle](https://www.powerlanguage.co.uk/wordle/) is a daily word guessing game where the objective is to guess the daily, five-letter "wordle" within six guesses. Each time you make a guess, you are given the following feedback:
+[Wordle](https://www.nytimes.com/games/wordle/index.html) is a daily word guessing game where the objective is to guess the daily, five-letter "wordle" within six guesses. Each time you make a guess, you are given the following feedback:
 - Letters that are in the correct position will be highlighted in green;
 - Letters that are in the wordle but not in the correct position are highlighted in yellow;
 - And, the rest are highlighted in gray.
 
-Here are the instructions from the [game](https://www.powerlanguage.co.uk/wordle/):
+Here are the instructions from the [game](https://www.nytimes.com/games/wordle/index.html):
 ![instructions-screenshot](https://images.squarespace-cdn.com/content/v1/50eca855e4b0939ae8bb12d9/80a523b2-edff-41ac-8a9e-d515285a0b74/How+to+play+original+Wordle.png?format=1000w)
 
 The game went viral as friends would compete with each other to see who could guess the wordle with the fewest number of guesses.
