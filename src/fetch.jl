@@ -15,10 +15,10 @@ wordles, valid_words = download_word_lists()
 """
 function download_word_lists()
     js_url = let
-        html = HTTP.request(:GET, joinpath(WORDLE_URL, "index.html")).body |> String
+        html = HTTP.request(:GET, join((WORDLE_URL, "index.html"), '/')).body |> String
 
         filename = match(r"src=\"(main.\w+.js)\"", html)[1]
-        joinpath(WORDLE_URL, filename)
+        join((WORDLE_URL, filename), '/')
     end
 
     js = replace(HTTP.request(:GET, js_url).body |> String, "\n" => "")
