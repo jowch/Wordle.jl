@@ -1,6 +1,6 @@
-wordle = 231
-version = "0.1.0"
+wordle = 241
+version = "0.1.1"
 
 [data]
-valid-words = "cbb6637f9250d224b9ced11a6b56ff1a36ad727e4e4616c7f4db7227b921be50"
-known-wordles = "3d99d459730c220673da9c2f4b4ddc136c26001a11d5721f53a746d2c77ceaf4"
+valid-words = "042ca970ca228693345b30c28329e3e29ab1e95b6afaebe71e1980cf9f52549f"
+known-wordles = "8071bd5baf74c705ae7b2fa2a53c0c626dae677cd4cd2109ebad70e6b66e4f2e"
