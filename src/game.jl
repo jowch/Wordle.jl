@@ -158,9 +158,13 @@ function available_letters(game::WordleGame)
     outcomes
 end
 
-function print_available_letters(game::WordleGame)
-    print("""
-    $(join('a':'z', ' '))
-    $(available_letters(game) |> join)
-    """)
+function print_available_letters(game::WordleGame; emoji = !(IN_REPL && REPL_HAS_COLOR))
+    if emoji
+        print("""
+        $(join('a':'z', ' '))
+        $(available_letters(game) |> join)
+        """)
+    else
+        print(color_letters('a':'z', available_letters(game)))
+    end
 end
